@@ -5,61 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>面密度計算機 - SJ</title>
     <style>
-        /* 字型設定：英文 Calibri, 中文 微軟正黑體 */
         body {
             font-family: "Calibri", "Microsoft JhengHei", sans-serif;
-            background-color: #f0f2f5;
-            color: #1a202c;
+            background-color: #f4f7f9;
+            color: #2d3748;
             margin: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            padding: 20px;
         }
 
         .container {
             width: 100%;
-            max-width: 600px;
-            padding: 20px;
+            max-width: 550px;
         }
 
-        /* 頂部資訊置中排版 */
-        .info-header {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: #4a5568;
-            line-height: 1.6;
-        }
-
-        .info-header span {
-            margin: 0 10px;
-        }
-
-        .visit-box {
-            display: inline-block;
-            background: #edf2f7;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            color: #2b6cb0;
-        }
-
-        /* 計算機主體卡片 */
         .card {
             background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 35px;
+            margin-bottom: 30px;
         }
 
         h2 {
             text-align: center;
             margin-top: 0;
-            color: #2d3748;
-            border-bottom: 2px solid #3182ce;
-            padding-bottom: 10px;
-            margin-bottom: 25px;
+            color: #1a365d;
+            font-size: 24px;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
         }
 
         .input-section {
@@ -68,94 +46,106 @@
 
         .section-label {
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: block;
-            color: #2b6cb0;
+            color: #3182ce;
+            border-left: 4px solid #3182ce;
+            padding-left: 10px;
         }
 
         .input-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
+            gap: 12px;
         }
 
         .input-group label {
             font-size: 12px;
             color: #718096;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
+            display: block;
         }
 
         input[type="number"] {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #cbd5e0;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 12px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
             box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #3182ce;
         }
 
         button {
             width: 100%;
-            padding: 14px;
+            padding: 15px;
             background-color: #3182ce;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.3s;
+            margin-top: 10px;
         }
 
         button:hover {
-            background-color: #2b6cb0;
+            background-color: #2c5282;
         }
 
-        /* 結果顯示 */
+        /* 結果區塊 */
         .result-area {
-            margin-top: 25px;
+            margin-top: 30px;
             padding: 20px;
-            background-color: #f7fafc;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
+            background-color: #ebf8ff;
+            border-radius: 12px;
+            border: 1px solid #bee3f8;
             display: none;
         }
 
         .result-line {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            font-size: 15px;
         }
 
         .final-val {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
-            color: #e53e3e;
-            border-top: 1px dashed #cbd5e0;
-            padding-top: 10px;
-            margin-top: 10px;
+            color: #2b6cb0;
+            border-top: 2px dashed #90cdf4;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        /* 底部資訊區 */
+        .footer-info {
+            text-align: center;
+            font-size: 13px;
+            color: #718096;
+            line-height: 1.8;
+        }
+
+        .visit-badge {
+            background: #e2e8f0;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            color: #4a5568;
+            margin-left: 5px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="info-header">
-        <div>
-            <span>作者：SJ</span> | 
-            <span>版本：v1.0</span> | 
-            <span>最後更新日期：2024/05/20</span>
-        </div>
-        <div style="margin-top: 8px;">
-            拜訪次數：<span class="visit-box" id="visitCount">0</span>
-        </div>
-    </div>
-
     <div class="card">
         <h2>面密度計算機</h2>
 
@@ -195,41 +185,45 @@
             </div>
         </div>
 
-        <button onclick="calculate()">計算面密度</button>
+        <button onclick="calculate()">執行計算</button>
 
         <div id="resultBox" class="result-area">
             <div class="result-line">
                 <span>平均空箔重：</span>
-                <span id="avgFoil">0.0000 g</span>
+                <span id="avgFoil">-</span>
             </div>
             <div class="result-line">
                 <span>平均塗膜重：</span>
-                <span id="avgCoat">0.0000 g</span>
+                <span id="avgCoat">-</span>
             </div>
             <div class="result-line final-val">
-                <span>計算面密度值：</span>
-                <span id="finalRes">0.000</span>
+                <span>平均面密度：</span>
+                <span id="finalRes">-</span>
             </div>
         </div>
+    </div>
+
+    <div class="footer-info">
+        <div>作者：SJ | 版本：v1.1 | 最後更新：2024/05/20</div>
+        <div>拜訪次數：<span class="visit-badge" id="visitCount">0</span></div>
     </div>
 </div>
 
 <script>
-    // 拜訪次數模擬 (使用 localStorage)
+    // 拜訪次數邏輯
     window.onload = function() {
-        let count = localStorage.getItem('visit_count') || 0;
+        let count = localStorage.getItem('sj_calc_visits') || 0;
         count = parseInt(count) + 1;
-        localStorage.setItem('visit_count', count);
+        localStorage.setItem('sj_calc_visits', count);
         document.getElementById('visitCount').innerText = count;
     };
 
-    // 四捨五入函式
+    // 四捨五入工具
     function roundTo(num, decimals) {
         return Math.round((num + Number.EPSILON) * Math.pow(10, decimals)) / Math.pow(10, decimals);
     }
 
     function calculate() {
-        // 讀取數值
         const f = [
             parseFloat(document.getElementById('f1').value) || 0,
             parseFloat(document.getElementById('f2').value) || 0,
@@ -241,23 +235,26 @@
             parseFloat(document.getElementById('c3').value) || 0
         ];
 
-        // 1. 計算平均並取小數下四位四捨五入
+        // 1. 平均值計算 (取小數下四位四捨五入)
         const avgF = roundTo((f[0] + f[1] + f[2]) / 3, 4);
         const avgC = roundTo((c[0] + c[1] + c[2]) / 3, 4);
 
         if (avgC === 0) {
-            alert("塗膜重平均不能為 0");
+            alert("錯誤：平均塗膜重不能為 0");
             return;
         }
 
-        // 2. 公式：(平均空箔重 / 平均塗膜重) * 15.52 * 1000
-        // 取小數下三位四捨五入
-        const loadingLevel = roundTo((avgF / avgC) * 15.52 * 1000, 3);
+        // 2. 更新後的公式計算
+        // (平均空箔重 / 平均塗膜重) * 15.52 * 1000
+        // 結果取小數下三位四捨五入
+        const rawResult = (avgF / avgC) * 15.52 * 1000;
+        const finalValue = roundTo(rawResult, 3);
 
-        // 顯示結果
+        // 3. 顯示結果與單位
         document.getElementById('avgFoil').innerText = avgF.toFixed(4) + " g";
         document.getElementById('avgCoat').innerText = avgC.toFixed(4) + " g";
-        document.getElementById('finalRes').innerText = loadingLevel.toFixed(3);
+        document.getElementById('finalRes').innerText = finalValue.toFixed(3) + " mg/cm²";
+        
         document.getElementById('resultBox').style.display = 'block';
     }
 </script>
