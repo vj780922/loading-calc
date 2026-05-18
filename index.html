@@ -1,233 +1,260 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>面密度計算機</title>
+    <title>漿料換算極片數量計算機</title>
     <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --preset-bg: #d4edda;
+            --loss-bg: #e2e3e5;
+            --size-bg: #fff3cd;
+        }
         body {
-            font-family: "Calibri", "Microsoft JhengHei", sans-serif;
-            background-color: #f5f7fa;
-            color: #333;
+            font-family: 'Calibri', 'Microsoft JhengHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            line-height: 1.6;
             margin: 0;
             padding: 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            min-height: 100vh;
         }
-        .calculator-card {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            padding: 30px;
+        .container {
             width: 100%;
-            max-width: 480px;
-        }
-        h2 {
-            text-align: center;
-            color: #1a365d;
-            margin-top: 0;
-            margin-bottom: 25px;
-            font-size: 24px;
-        }
-        .section-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #2b6cb0;
-            margin-bottom: 10px;
-            border-left: 4px solid #2b6cb0;
-            padding-left: 8px;
-        }
-        .input-group {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            max-width: 850px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             margin-bottom: 20px;
         }
-        .input-field {
-            display: flex;
-            flex-direction: column;
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
-        .input-field label {
-            font-size: 13px;
-            color: #718096;
-            margin-bottom: 4px;
-        }
-        input[type="number"] {
-            padding: 10px;
-            border: 1px solid #cbd5e0;
-            border-radius: 6px;
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        input[type="number"]:focus {
-            border-color: #3182ce;
-            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #3182ce;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
+        .section-title {
             font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-top: 10px;
+            margin: 20px 0 10px 0;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
         }
-        button:hover {
-            background-color: #2b6cb0;
-        }
-        .result-container {
-            margin-top: 25px;
-            background-color: #ebf8ff;
-            border: 1px solid #bee3f8;
-            border-radius: 8px;
+        .bg-preset { background-color: var(--preset-bg); color: #155724; }
+        .bg-loss { background-color: var(--loss-bg); color: #383d41; }
+        .bg-size { background-color: var(--size-bg); color: #856404; }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
             padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .grid-preset { background-color: rgba(212, 237, 218, 0.3); border: 1px solid var(--preset-bg); }
+        .grid-loss { background-color: rgba(226, 227, 229, 0.3); border: 1px solid var(--loss-bg); }
+        .grid-size { background-color: rgba(255, 243, 205, 0.3); border: 1px solid var(--size-bg); }
+
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.85em;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-family: 'Calibri', 'Microsoft JhengHei', sans-serif;
+        }
+        .result-section {
+            padding: 25px;
+            background: #eef2f3;
+            border-radius: 8px;
+            border-left: 6px solid var(--accent-color);
         }
         .result-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 15px;
+            margin-bottom: 10px;
         }
-        .result-item:last-child {
-            margin-bottom: 0;
-            padding-top: 8px;
-            border-top: 1px dashed #90cdf4;
-        }
-        .final-result {
-            font-size: 18px;
-            font-weight: bold;
-            color: #2b6cb0;
-        }
-        .error-msg {
-            color: #e53e3e;
-            text-align: center;
-            font-size: 14px;
+        .result-value { font-weight: bold; color: #d35400; }
+        
+        /* 頁尾資訊排版 */
+        .footer-info {
+            width: 100%;
+            max-width: 850px;
             margin-top: 10px;
-            display: none;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .footer-item {
+            margin: 5px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .counter-img {
+            height: 24px;
+            filter: grayscale(0.5);
         }
     </style>
 </head>
 <body>
 
-<div class="calculator-card">
-    <h2>面密度計算機</h2>
+<div class="container">
+    <h1>漿料換算極片數量計算機 (R8)</h1>
     
-    <!-- 空箔重輸入區 -->
-    <div class="section-title">空箔重 (g)</div>
-    <div class="input-group">
-        <div class="input-field">
-            <label for="foil1">第 1 筆</label>
-            <input type="number" id="foil1" step="0.001" placeholder="0.000" min="0">
+    <div class="section-title bg-preset">漿料資訊</div>
+    <div class="grid-container grid-preset">
+        <div class="input-group">
+            <label>投入桶數</label>
+            <input type="number" id="bucketCount" value="2" oninput="calculate()">
         </div>
-        <div class="input-field">
-            <label for="foil2">第 2 筆</label>
-            <input type="number" id="foil2" step="0.001" placeholder="0.000" min="0">
+        <div class="input-group">
+            <label>單桶漿料重量 (kg)</label>
+            <input type="number" id="weightPerBucket" value="11" step="0.1" oninput="calculate()">
         </div>
-        <div class="input-field">
-            <label for="foil3">第 3 筆</label>
-            <input type="number" id="foil3" step="0.001" placeholder="0.000" min="0">
+        <div class="input-group">
+            <label>固含量 (%)</label>
+            <input type="number" id="solidContent" value="57.10" step="0.01" oninput="calculate()">
         </div>
-    </div>
-
-    <!-- 塗膜重輸入區 -->
-    <div class="section-title">塗膜重 (g)</div>
-    <div class="input-group">
-        <div class="input-field">
-            <label for="coat1">第 1 筆</label>
-            <input type="number" id="coat1" step="0.001" placeholder="0.000" min="0">
-        </div>
-        <div class="input-field">
-            <label for="coat2">第 2 筆</label>
-            <input type="number" id="coat2" step="0.001" placeholder="0.000" min="0">
-        </div>
-        <div class="input-field">
-            <label for="coat3">第 3 筆</label>
-            <input type="number" id="coat3" step="0.001" placeholder="0.000" min="0">
+        <div class="input-group">
+            <label>面密度 (mg/cm²)</label>
+            <input type="number" id="arealDensity" value="12.70" step="0.01" oninput="calculate()">
         </div>
     </div>
 
-    <button onclick="calculateDensity()">開始計算</button>
-    <div id="error" class="error-msg">請填寫所有欄位，且數值需大於 0</div>
+    <div class="section-title bg-size">極片尺寸</div>
+    <div class="grid-container grid-size">
+        <div class="input-group">
+            <label>箔材幅寬 (mm)</label>
+            <input type="number" id="foilWidth" value="320" oninput="calculate()">
+        </div>
+        <div class="input-group">
+            <label>塗佈有效幅寬 (mm)</label>
+            <input type="number" id="coatingWidth" value="255" oninput="calculate()">
+        </div>
+        <div class="input-group">
+            <label>極片高度 (mm)</label>
+            <input type="number" id="pieceHeight" value="124" oninput="calculate()">
+        </div>
+        <div class="input-group">
+            <label>模數 (up)</label>
+            <input type="number" id="upCount" value="2" oninput="calculate()">
+        </div>
+    </div>
 
-    <!-- 計算結果顯示區 -->
-    <div class="result-container" id="results" style="display: none;">
+    <div class="section-title bg-loss">固定損耗</div>
+    <div class="grid-container grid-loss">
+        <div class="input-group">
+            <label>過濾器/管路料損 (kg)</label>
+            <input type="number" id="filterLoss" value="1.8" step="0.1" oninput="calculate()">
+        </div>
+        <div class="input-group">
+            <label>塗佈損耗 (m)</label>
+            <input type="number" id="coatLossM" value="5" step="0.5" oninput="calculate()">
+        </div>
+        <div class="input-group">
+            <label>輾壓損耗 (m)</label>
+            <input type="number" id="rollLossM" value="3" step="0.5" oninput="calculate()">
+        </div>
+        <div class="input-group">
+            <label>製片損耗 (m)</label>
+            <input type="number" id="sliceLossM" value="3" step="0.5" oninput="calculate()">
+        </div>
+    </div>
+
+    <div class="result-section">
         <div class="result-item">
-            <span>平均空箔重：</span>
-            <span id="avgFoil">-</span>
+            <span>有效漿料量：</span>
+            <span class="result-value" id="effectiveSlurryOut">-</span>
         </div>
         <div class="result-item">
-            <span>平均塗膜重：</span>
-            <span id="avgCoat">-</span>
+            <span>理論可塗佈長度：</span>
+            <span class="result-value" id="theoryLengthOut">-</span>
         </div>
-        <div class="result-item final-result">
-            <span>計算面密度：</span>
-            <span id="finalDensity">-</span>
+        <div class="result-item">
+            <span>實際可用長度：</span>
+            <span class="result-value" style="color: #27ae60;" id="finalLengthOut">-</span>
+        </div>
+        <div class="result-item" style="border-top: 1px solid #ccc; padding-top: 10px; margin-top: 10px;">
+            <span>實際可產出極片數量：</span>
+            <span class="result-value" style="font-size: 1.5em;" id="totalPiecesOut">-</span>
         </div>
     </div>
+
+    <footer class="footer-info">
+        <div class="footer-item">
+            <span>拜訪次數：</span>
+            <img src="https://moe-counter.glitch.me/get/@vj780922-sheet-calc?theme=asoul" class="counter-img" alt="Hits">
+            <span>次</span>
+        </div>
+        <div class="footer-item">作者：SJ | 版本：v1.5.1</div>
+        <div class="footer-item">最後更新日期：<span id="update-date"></span></div>
+    </footer>
 </div>
 
 <script>
-    // 精確的四捨五入函式，避免 JavaScript 浮點數運算誤差
-    function roundTo(num, decimals) {
-        return Math.round((num + Number.EPSILON) * Math.pow(10, decimals)) / Math.pow(10, decimals);
+    function calculate() {
+        const bCount = parseFloat(document.getElementById('bucketCount').value) || 0;
+        const wPerB = parseFloat(document.getElementById('weightPerBucket').value) || 0;
+        const sc = parseFloat(document.getElementById('solidContent').value) || 0;
+        const ad = parseFloat(document.getElementById('arealDensity').value) || 0;
+        
+        const cw = parseFloat(document.getElementById('coatingWidth').value) || 0;
+        const ph = parseFloat(document.getElementById('pieceHeight').value) || 0;
+        const up = parseFloat(document.getElementById('upCount').value) || 0;
+
+        const fLoss = parseFloat(document.getElementById('filterLoss').value) || 0;
+        const coatL = parseFloat(document.getElementById('coatLossM').value) || 0;
+        const rollL = parseFloat(document.getElementById('rollLossM').value) || 0;
+        const sliceL = parseFloat(document.getElementById('sliceLossM').value) || 0;
+
+        let effectiveSlurryKg = (bCount * wPerB) - fLoss;
+        if (effectiveSlurryKg < 0) effectiveSlurryKg = 0;
+
+        let dryWeightG = (effectiveSlurryKg * 1000) * (sc / 100);
+        let areaCm2 = dryWeightG / (ad / 1000);
+        let theoryLengthM = (areaCm2 / ((cw / 10) * 2)) / 100;
+
+        let finalLengthM = theoryLengthM - coatL - rollL - sliceL;
+        if (finalLengthM < 0) finalLengthM = 0;
+
+        let totalPieces = Math.floor((finalLengthM * 1000) / ph) * up;
+
+        document.getElementById('effectiveSlurryOut').innerText = effectiveSlurryKg.toFixed(2) + " kg";
+        document.getElementById('theoryLengthOut').innerText = theoryLengthM.toFixed(2) + " m";
+        document.getElementById('finalLengthOut').innerText = finalLengthM.toFixed(2) + " m";
+        document.getElementById('totalPiecesOut').innerText = totalPieces.toLocaleString() + " 片";
     }
 
-    function calculateDensity() {
-        const errorDiv = document.getElementById('error');
-        const resultsDiv = document.getElementById('results');
-
-        // 取得輸入值
-        const foil1 = parseFloat(document.getElementById('foil1').value);
-        const foil2 = parseFloat(document.getElementById('foil2').value);
-        const foil3 = parseFloat(document.getElementById('foil3').value);
-        
-        const coat1 = parseFloat(document.getElementById('coat1').value);
-        const coat2 = parseFloat(document.getElementById('coat2').value);
-        const coat3 = parseFloat(document.getElementById('coat3').value);
-
-        // 檢查欄位是否齊全
-        if (isNaN(foil1) || isNaN(foil2) || isNaN(foil3) || isNaN(coat1) || isNaN(coat2) || isNaN(coat3)) {
-            errorDiv.style.display = 'block';
-            resultsDiv.style.display = 'none';
-            return;
-        }
-
-        // 檢查分母（平均塗膜重）不可為 0
-        if (coat1 + coat2 + coat3 === 0) {
-            errorDiv.innerText = "塗膜重平均不可為 0";
-            errorDiv.style.display = 'block';
-            resultsDiv.style.display = 'none';
-            return;
-        }
-
-        errorDiv.style.display = 'none';
-
-        // 1. 計算平均值並取到小數下四位（四捨五入）
-        const avgFoilRaw = (foil1 + foil2 + foil3) / 3;
-        const avgCoatRaw = (coat1 + coat2 + coat3) / 3;
-        
-        const avgFoil = roundTo(avgFoilRaw, 4);
-        const avgCoat = roundTo(avgCoatRaw, 4);
-
-        // 2. 依公式計算面密度：(平均空箔重 / 平均塗膜重) * 15.52 * 1000
-        // 取到小數下三位（四捨五入）
-        const densityRaw = (avgFoil / avgCoat) * 15.52 * 1000;
-        const finalDensity = roundTo(densityRaw, 3);
-
-        // 3. 渲染到畫面上（強制補足小數位數）
-        document.getElementById('avgFoil').innerText = avgFoil.toFixed(4) + " g";
-        document.getElementById('avgCoat').innerText = avgCoat.toFixed(4) + " g";
-        document.getElementById('finalDensity').innerText = finalDensity.toFixed(3);
-        
-        resultsDiv.style.display = 'block';
+    function setDate() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        document.getElementById('update-date').innerText = `${yyyy}-${mm}-${dd}`;
     }
+
+    window.onload = function() {
+        calculate();
+        setDate();
+    };
 </script>
 
 </body>
