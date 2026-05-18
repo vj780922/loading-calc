@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>面密度計算機 - SJ</title>
     <style>
-        /* 字型設定：英文 Calibri, 中文 微軟正黑體 */
         body {
             font-family: "Calibri", "Microsoft JhengHei", sans-serif;
             background-color: #f4f7f9;
@@ -193,7 +192,7 @@
     </div>
 
     <div class="footer-info">
-        <div>作者：SJ | 版本：v1.4 | 最後更新日期：2024/05/18</div>
+        <div>作者：SJ | 版本：v1.5 | 最後更新日期：2024/05/18</div>
         <div>拜訪次數：<span class="visit-badge" id="visitCount">0</span></div>
     </div>
 </div>
@@ -218,11 +217,12 @@
         const c2 = parseFloat(document.getElementById('c2').value) || 0;
         const c3 = parseFloat(document.getElementById('c3').value) || 0;
 
+        // 計算平均並四捨五入至小數下四位
         const avgFoil = roundTo((f1 + f2 + f3) / 3, 4);
         const avgCoat = roundTo((c1 + c2 + c3) / 3, 4);
 
-        // 新公式：(平均空箔重 - 平均塗膜重) / 15.52 * 1000
-        const resultRaw = ((avgFoil - avgCoat) / 15.52) * 1000;
+        // 新公式：(平均塗膜重 - 平均空箔重) / 15.52 * 1000
+        const resultRaw = ((avgCoat - avgFoil) / 15.52) * 1000;
         const finalValue = roundTo(resultRaw, 3);
 
         document.getElementById('avgFoil').innerText = avgFoil.toFixed(4) + " g";
