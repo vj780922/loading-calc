@@ -94,7 +94,6 @@
             background-color: #2c5282;
         }
 
-        /* 結果顯示 */
         .result-area {
             margin-top: 30px;
             padding: 20px;
@@ -120,7 +119,6 @@
             margin-top: 15px;
         }
 
-        /* 底部置中資訊 */
         .footer-info {
             text-align: center;
             font-size: 13px;
@@ -195,13 +193,12 @@
     </div>
 
     <div class="footer-info">
-        <div>作者：SJ | 版本：v1.2 | 最後更新日期：2024/05/20</div>
+        <div>作者：SJ | 版本：v1.4 | 最後更新日期：2024/05/18</div>
         <div>拜訪次數：<span class="visit-badge" id="visitCount">0</span></div>
     </div>
 </div>
 
 <script>
-    // 拜訪次數載入
     window.onload = function() {
         let count = localStorage.getItem('sj_calc_visits') || 0;
         count = parseInt(count) + 1;
@@ -209,13 +206,11 @@
         document.getElementById('visitCount').innerText = count;
     };
 
-    // 四捨五入輔助工具
     function roundTo(num, decimals) {
         return Math.round((num + Number.EPSILON) * Math.pow(10, decimals)) / Math.pow(10, decimals);
     }
 
     function calculate() {
-        // 取得輸入值
         const f1 = parseFloat(document.getElementById('f1').value) || 0;
         const f2 = parseFloat(document.getElementById('f2').value) || 0;
         const f3 = parseFloat(document.getElementById('f3').value) || 0;
@@ -223,21 +218,13 @@
         const c2 = parseFloat(document.getElementById('c2').value) || 0;
         const c3 = parseFloat(document.getElementById('c3').value) || 0;
 
-        // 1. 計算平均值並取小數點下四位 (四捨五入)
         const avgFoil = roundTo((f1 + f2 + f3) / 3, 4);
         const avgCoat = roundTo((c1 + c2 + c3) / 3, 4);
 
-        if (avgCoat === 0) {
-            alert("塗膜重平均不能為 0，請重新輸入。");
-            return;
-        }
-
-        // 2. 更新公式：(平均空箔重 / 平均塗膜重) * 15.52 * 1000
-        // 結果取小數點下三位 (四捨五入)
-        const resultRaw = (avgFoil / avgCoat) * 15.52;
+        // 新公式：(平均空箔重 - 平均塗膜重) / 15.52 * 1000
+        const resultRaw = ((avgFoil - avgCoat) / 15.52) * 1000;
         const finalValue = roundTo(resultRaw, 3);
 
-        // 3. 渲染結果並加上 mg/cm² 單位
         document.getElementById('avgFoil').innerText = avgFoil.toFixed(4) + " g";
         document.getElementById('avgCoat').innerText = avgCoat.toFixed(4) + " g";
         document.getElementById('finalRes').innerText = finalValue.toFixed(3) + " mg/cm²";
