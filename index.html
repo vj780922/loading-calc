@@ -234,7 +234,7 @@
 
         // 2. 更新公式：(平均空箔重 / 平均塗膜重) * 15.52 * 1000
         // 結果取小數點下三位 (四捨五入)
-        const resultRaw = (avgFoil / avgCoat) * 15.52 * 1000;
+        const resultRaw = (avgFoil / avgCoat) * 15.52;
         const finalValue = roundTo(resultRaw, 3);
 
         // 3. 渲染結果並加上 mg/cm² 單位
