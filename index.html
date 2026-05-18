@@ -22,8 +22,7 @@
             margin: 0;
             padding: 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
         }
         .container {
             width: 100%;
@@ -32,7 +31,6 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
         }
         h1 {
             text-align: center;
@@ -53,7 +51,7 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
             padding: 15px;
             border-radius: 8px;
@@ -90,28 +88,24 @@
         }
         .result-value { font-weight: bold; color: #d35400; }
         
-        /* 頁尾資訊排版 */
         .footer-info {
-            width: 100%;
-            max-width: 850px;
-            margin-top: 10px;
+            margin-top: 30px;
             padding-top: 20px;
-            border-top: 1px solid #ddd;
-            text-align: center;
+            border-top: 1px solid #eee;
             font-size: 0.9em;
-            color: #7f8c8d;
+            color: #555;
+            text-align: center; 
         }
-        .footer-item {
-            margin: 5px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
+        .footer-item { display: block; margin-bottom: 8px; }
+        
+        /* 計次器圖片調整 */
         .counter-img {
             height: 24px;
-            filter: grayscale(0.5);
+            vertical-align: middle;
+            margin: 0 5px;
         }
+
+        @media (max-width: 600px) { .grid-container { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -198,63 +192,62 @@
         </div>
     </div>
 
-    <footer class="footer-info">
+    <div class="footer-info">
         <div class="footer-item">
-            <span>拜訪次數：</span>
-            <img src="https://moe-counter.glitch.me/get/@vj780922-sheet-calc?theme=asoul" class="counter-img" alt="Hits">
-            <span>次</span>
+            拜訪次數：<img src="https://moe-counter.glitch.me/get/@vj780922-sheet-calc?theme=asoul" class="counter-img" alt="Hits"> 次
         </div>
-        <div class="footer-item">作者：SJ | 版本：v1.5.1</div>
+        <div class="footer-item">作者：SJ</div>
+        <div class="footer-item">版本：v1.5.1</div>
         <div class="footer-item">最後更新日期：<span id="update-date"></span></div>
-    </footer>
+    </div>
 </div>
 
 <script>
-    function calculate() {
-        const bCount = parseFloat(document.getElementById('bucketCount').value) || 0;
-        const wPerB = parseFloat(document.getElementById('weightPerBucket').value) || 0;
-        const sc = parseFloat(document.getElementById('solidContent').value) || 0;
-        const ad = parseFloat(document.getElementById('arealDensity').value) || 0;
-        
-        const cw = parseFloat(document.getElementById('coatingWidth').value) || 0;
-        const ph = parseFloat(document.getElementById('pieceHeight').value) || 0;
-        const up = parseFloat(document.getElementById('upCount').value) || 0;
+function calculate() {
+    const bCount = parseFloat(document.getElementById('bucketCount').value) || 0;
+    const wPerB = parseFloat(document.getElementById('weightPerBucket').value) || 0;
+    const sc = parseFloat(document.getElementById('solidContent').value) || 0;
+    const ad = parseFloat(document.getElementById('arealDensity').value) || 0;
+    
+    const cw = parseFloat(document.getElementById('coatingWidth').value) || 0;
+    const ph = parseFloat(document.getElementById('pieceHeight').value) || 0;
+    const up = parseFloat(document.getElementById('upCount').value) || 0;
 
-        const fLoss = parseFloat(document.getElementById('filterLoss').value) || 0;
-        const coatL = parseFloat(document.getElementById('coatLossM').value) || 0;
-        const rollL = parseFloat(document.getElementById('rollLossM').value) || 0;
-        const sliceL = parseFloat(document.getElementById('sliceLossM').value) || 0;
+    const fLoss = parseFloat(document.getElementById('filterLoss').value) || 0;
+    const coatL = parseFloat(document.getElementById('coatLossM').value) || 0;
+    const rollL = parseFloat(document.getElementById('rollLossM').value) || 0;
+    const sliceL = parseFloat(document.getElementById('sliceLossM').value) || 0;
 
-        let effectiveSlurryKg = (bCount * wPerB) - fLoss;
-        if (effectiveSlurryKg < 0) effectiveSlurryKg = 0;
+    let effectiveSlurryKg = (bCount * wPerB) - fLoss;
+    if (effectiveSlurryKg < 0) effectiveSlurryKg = 0;
 
-        let dryWeightG = (effectiveSlurryKg * 1000) * (sc / 100);
-        let areaCm2 = dryWeightG / (ad / 1000);
-        let theoryLengthM = (areaCm2 / ((cw / 10) * 2)) / 100;
+    let dryWeightG = (effectiveSlurryKg * 1000) * (sc / 100);
+    let areaCm2 = dryWeightG / (ad / 1000);
+    let theoryLengthM = (areaCm2 / ((cw / 10) * 2)) / 100;
 
-        let finalLengthM = theoryLengthM - coatL - rollL - sliceL;
-        if (finalLengthM < 0) finalLengthM = 0;
+    let finalLengthM = theoryLengthM - coatL - rollL - sliceL;
+    if (finalLengthM < 0) finalLengthM = 0;
 
-        let totalPieces = Math.floor((finalLengthM * 1000) / ph) * up;
+    let totalPieces = Math.floor((finalLengthM * 1000) / ph) * up;
 
-        document.getElementById('effectiveSlurryOut').innerText = effectiveSlurryKg.toFixed(2) + " kg";
-        document.getElementById('theoryLengthOut').innerText = theoryLengthM.toFixed(2) + " m";
-        document.getElementById('finalLengthOut').innerText = finalLengthM.toFixed(2) + " m";
-        document.getElementById('totalPiecesOut').innerText = totalPieces.toLocaleString() + " 片";
-    }
+    document.getElementById('effectiveSlurryOut').innerText = effectiveSlurryKg.toFixed(2) + " kg";
+    document.getElementById('theoryLengthOut').innerText = theoryLengthM.toFixed(2) + " m";
+    document.getElementById('finalLengthOut').innerText = finalLengthM.toFixed(2) + " m";
+    document.getElementById('totalPiecesOut').innerText = totalPieces.toLocaleString() + " 片";
+}
 
-    function setDate() {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        document.getElementById('update-date').innerText = `${yyyy}-${mm}-${dd}`;
-    }
+function setDate() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    document.getElementById('update-date').innerText = `${yyyy}-${mm}-${dd}`;
+}
 
-    window.onload = function() {
-        calculate();
-        setDate();
-    };
+window.onload = function() {
+    calculate();
+    setDate();
+};
 </script>
 
 </body>
