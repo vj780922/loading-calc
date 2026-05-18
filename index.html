@@ -144,58 +144,37 @@
 
         <span class="section-label">總厚度 (um)</span>
         <div class="input-row">
-            <div class="input-group">
-                <label>第 1 筆</label>
-                <input type="number" id="t1" step="0.1" placeholder="0.0">
-            </div>
-            <div class="input-group">
-                <label>第 2 筆</label>
-                <input type="number" id="t2" step="0.1" placeholder="0.0">
-            </div>
-            <div class="input-group">
-                <label>第 3 筆</label>
-                <input type="number" id="t3" step="0.1" placeholder="0.0">
-            </div>
+            <div class="input-group"><label>第 1 筆</label><input type="number" id="t1" step="0.1" placeholder="0.0"></div>
+            <div class="input-group"><label>第 2 筆</label><input type="number" id="t2" step="0.1" placeholder="0.0"></div>
+            <div class="input-group"><label>第 3 筆</label><input type="number" id="t3" step="0.1" placeholder="0.0"></div>
         </div>
 
         <span class="section-label">空箔重 (g)</span>
         <div class="input-row">
-            <div class="input-group"><label>第 1 筆</label><input type="number" id="f1" step="0.001" placeholder="0.000"></div>
-            <div class="input-group"><label>第 2 筆</label><input type="number" id="f2" step="0.001" placeholder="0.000"></div>
-            <div class="input-group"><label>第 3 筆</label><input type="number" id="f3" step="0.001" placeholder="0.000"></div>
+            <div class="input-group"><label>第 1 筆</label><input type="number" id="f1" step="0.0001" placeholder="0.0000"></div>
+            <div class="input-group"><label>第 2 筆</label><input type="number" id="f2" step="0.0001" placeholder="0.0000"></div>
+            <div class="input-group"><label>第 3 筆</label><input type="number" id="f3" step="0.0001" placeholder="0.0000"></div>
         </div>
 
         <span class="section-label">塗膜重 (g)</span>
         <div class="input-row">
-            <div class="input-group"><label>第 1 筆</label><input type="number" id="c1" step="0.001" placeholder="0.000"></div>
-            <div class="input-group"><label>第 2 筆</label><input type="number" id="c2" step="0.001" placeholder="0.000"></div>
-            <div class="input-group"><label>第 3 筆</label><input type="number" id="c3" step="0.001" placeholder="0.000"></div>
+            <div class="input-group"><label>第 1 筆</label><input type="number" id="c1" step="0.0001" placeholder="0.0000"></div>
+            <div class="input-group"><label>第 2 筆</label><input type="number" id="c2" step="0.0001" placeholder="0.0000"></div>
+            <div class="input-group"><label>第 3 筆</label><input type="number" id="c3" step="0.0001" placeholder="0.0000"></div>
         </div>
 
         <button onclick="calculate()">執行計算</button>
 
         <div id="resultBox" class="result-area">
-            <div class="result-line">
-                <span>平均總厚度：</span>
-                <span id="avgThick">-</span>
-            </div>
-            <div class="result-line">
-                <span>平均空箔重：</span>
-                <span id="avgFoil">-</span>
-            </div>
-            <div class="result-line">
-                <span>平均塗膜重：</span>
-                <span id="avgCoat">-</span>
-            </div>
-            <div class="result-line final-val">
-                <span>平均面密度：</span>
-                <span id="finalRes">-</span>
-            </div>
+            <div class="result-line"><span>平均總厚度：</span><span id="avgThick">-</span></div>
+            <div class="result-line"><span>平均空箔重：</span><span id="avgFoil">-</span></div>
+            <div class="result-line"><span>平均塗膜重：</span><span id="avgCoat">-</span></div>
+            <div class="result-line final-val"><span>平均面密度：</span><span id="finalRes">-</span></div>
         </div>
     </div>
 
     <div class="footer-info">
-        <div>作者：SJ | 版本：v1.6 | 最後更新日期：2024/05/20</div>
+        <div>作者：SJ | 版本：v1.7 | 最後更新日期：2024/05/20</div>
         <div>拜訪次數：<span class="visit-badge" id="visitCount">0</span></div>
     </div>
 </div>
@@ -213,38 +192,28 @@
     }
 
     function calculate() {
-        // 厚度數據
-        const t = [
-            parseFloat(document.getElementById('t1').value) || 0,
-            parseFloat(document.getElementById('t2').value) || 0,
-            parseFloat(document.getElementById('t3').value) || 0
-        ];
-        // 重量數據
-        const f = [
-            parseFloat(document.getElementById('f1').value) || 0,
-            parseFloat(document.getElementById('f2').value) || 0,
-            parseFloat(document.getElementById('f3').value) || 0
-        ];
-        const c = [
-            parseFloat(document.getElementById('c1').value) || 0,
-            parseFloat(document.getElementById('c2').value) || 0,
-            parseFloat(document.getElementById('c3').value) || 0
-        ];
+        // 讀取數值
+        const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
+        
+        const tAvg = (getVal('t1') + getVal('t2') + getVal('t3')) / 3;
+        const fAvg = (getVal('f1') + getVal('f2') + getVal('f3')) / 3;
+        const cAvg = (getVal('c1') + getVal('c2') + getVal('c3')) / 3;
 
-        // 計算平均
-        const avgThick = roundTo((t[0] + t[1] + t[2]) / 3, 2); // 厚度取小數下二位
-        const avgFoil = roundTo((f[0] + f[1] + f[2]) / 3, 4);  // 重量取小數下四位
-        const avgCoat = roundTo((c[0] + c[1] + c[2]) / 3, 4);
+        // 計算並執行四捨五入
+        const avgThick = roundTo(tAvg, 2); // 厚度維持小數下二位
+        const avgFoil = roundTo(fAvg, 4);  // 箔重維持小數下四位
+        const avgCoat = roundTo(cAvg, 4);  // 塗膜總重維持小數下四位
 
         // 公式：(平均塗膜重 - 平均空箔重) / 15.52 * 1000
         const resultRaw = ((avgCoat - avgFoil) / 15.52) * 1000;
-        const finalValue = roundTo(resultRaw, 3);
+        // 依照要求：顯示至小數下一位 (對第二位四捨五入)
+        const finalValue = roundTo(resultRaw, 1);
 
-        // 顯示結果
+        // 渲染結果
         document.getElementById('avgThick').innerText = avgThick.toFixed(2) + " um";
         document.getElementById('avgFoil').innerText = avgFoil.toFixed(4) + " g";
         document.getElementById('avgCoat').innerText = avgCoat.toFixed(4) + " g";
-        document.getElementById('finalRes').innerText = finalValue.toFixed(3) + " mg/cm²";
+        document.getElementById('finalRes').innerText = finalValue.toFixed(1) + " mg/cm²";
         
         document.getElementById('resultBox').style.display = 'block';
     }
